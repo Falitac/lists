@@ -97,6 +97,23 @@ void sumConsecutiveN(Node*& head, int n) {
   }
 }
 
+void swapFirstLast(Node*& head) {
+  if(!head or !head->next) {
+    return;
+  }
+
+  Node* last = head;
+  while(last->next->next) {
+    last = last->next;
+  }
+
+  Node* tmp = head;
+  head = last->next;
+  last->next = tmp;
+  head->next = tmp->next;
+  tmp->next = nullptr;
+}
+
 int main(int argc, char** argv) {
   Node* head;
 
@@ -117,6 +134,8 @@ int main(int argc, char** argv) {
   add(head, 4);
   print(head);
   sumConsecutiveN(head, 3);
+  print(head);
+  swapFirstLast(head);
   print(head);
 
   clear(head);
