@@ -147,6 +147,14 @@ void swapFirstLast(Node*& head) {
   tmp->next = nullptr;
 }
 
+void swapFirstTwo(Node*& head) {
+  if(!head || !head->next) return;
+  Node* tmp = head->next;
+  head->next = tmp->next;
+  tmp->next = head;
+  head = tmp;
+}
+
 void removeBefore(Node*& head, int val) {
   if(!head or !head->next) {
     return;
@@ -224,21 +232,8 @@ int main(int argc, char** argv) {
   add(head, 4);
   print(head);
 
-  sumConsecutiveN(head, 3);
+  swapFirstTwo(head);
   print(head);
 
-  swapFirstLast(head);
-  print(head);
-
-  copyValueNTimes(head, 4);
-  print(head);
-
-  reverse3(head);
-  print(head);
-
-  for(int i = 0; i < 10; i++) {
-    removeBefore(head, 10);
-    print(head);
-  }
   clear(head);
 }
