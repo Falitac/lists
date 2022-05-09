@@ -167,6 +167,43 @@ void removeBefore(Node*& head, int val) {
   head = nextNode;
 }
 
+void reverse(Node*& head) {
+  if(!head) return;
+
+  Node* newHead = nullptr;
+  Node* it = head;
+  while(it) {
+    add(newHead, it->val);
+    it = it->next;
+  }
+  clear(head);
+
+  head = newHead;
+}
+
+Node* reverseRec(Node* head) {
+  if(!head || !head->next) return head;
+  auto result = reverseRec(head->next);
+  head->next->next = head;
+  head->next = nullptr;
+  return result;
+}
+
+void reverse2(Node*& head) {
+  head = reverseRec(head);
+}
+
+void reverse3(Node*& head) {
+  Node* prev = nullptr, *it = head;
+  while(it) {
+    Node* tmp = it->next;
+    it->next = prev;
+    prev = it;
+    it = tmp;
+  }
+  head = prev;
+}
+
 int main(int argc, char** argv) {
   Node* head = nullptr;
 
@@ -194,6 +231,9 @@ int main(int argc, char** argv) {
   print(head);
 
   copyValueNTimes(head, 4);
+  print(head);
+
+  reverse3(head);
   print(head);
 
   for(int i = 0; i < 10; i++) {
