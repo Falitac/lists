@@ -19,6 +19,26 @@ void addAfter(Node* node, int val) {
   node->next = new Node(val);
 }
 
+void deleteElement(Node*& head, int val) {
+  if(!head) return;
+
+  if(head->val == val) {
+    Node* nextNode = head->next;
+    delete head;
+    head = nextNode;
+    return;
+  }
+
+  Node* it = head;
+  while(it->next and it->next->val != val) {
+    it = it->next;
+  }
+
+  Node* nextNode = it->next->next;
+  delete it->next;
+  it->next = nextNode;
+}
+
 void deleteAfter(Node* node) {
   if(!node or !node->next) {
     return;
@@ -70,8 +90,21 @@ void copyN(Node* head, int n) {
     head = head->next;
     lastElement = lastElement->next;
   }
+}
 
-  std::printf("Size = %d\n", listSize);
+void copyValueNTimes(Node* head, int n) {
+  if(!head) {
+    return;
+  }
+
+  while(head->next) {
+    head = head->next;
+  }
+  int val = head->val;
+  for(int i = 0; i < n; i++) {
+    addAfter(head, val);
+    head = head->next;
+  }
 }
 
 void sumConsecutiveN(Node*& head, int n) {
@@ -114,8 +147,28 @@ void swapFirstLast(Node*& head) {
   tmp->next = nullptr;
 }
 
+void removeBefore(Node*& head, int val) {
+  if(!head or !head->next) {
+    return;
+  }
+  add(head, 0); // Push
+  Node* it = head;
+
+  while(it->next->next and it->next->next->val != val) {
+    it = it->next;
+  }
+
+  Node* nextNode = it->next->next;
+  delete it->next;
+  it->next = nextNode;
+
+  nextNode = head->next; // Pop
+  delete head;
+  head = nextNode;
+}
+
 int main(int argc, char** argv) {
-  Node* head;
+  Node* head = nullptr;
 
 /*
   add(head, 4);
@@ -133,10 +186,19 @@ int main(int argc, char** argv) {
   add(head, -2);
   add(head, 4);
   print(head);
+
   sumConsecutiveN(head, 3);
   print(head);
+
   swapFirstLast(head);
   print(head);
 
+  copyValueNTimes(head, 4);
+  print(head);
+
+  for(int i = 0; i < 10; i++) {
+    removeBefore(head, 10);
+    print(head);
+  }
   clear(head);
 }
