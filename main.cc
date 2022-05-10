@@ -21,10 +21,10 @@ void addAfter(Node* node, int val) {
   node->next = new Node(val);
 }
 
-void enqueue(Node*& head, int val) {
+Node* enqueue(Node*& head, int val) {
   if(!head) {
     add(head, val);
-    return;
+    return head;
   }
 
   Node* it = head;
@@ -32,6 +32,8 @@ void enqueue(Node*& head, int val) {
     it = it->next;
   }
   addAfter(it, val);
+
+  return it;
 }
 
 void deleteElement(Node*& head, int val) {
@@ -227,22 +229,25 @@ void reverse3(Node*& head) {
   head = prev;
 }
 
-//better than previous, probably more DRY solution
+//omg, dunno
 void splitEachTwo(Node*& source, Node*& dest1, Node*& dest2) {
   if(dest1)  return;
   if(dest2)  return;
   if(!source) return;
 
-  Node* it = source, *it1 = nullptr, *it2 = nullptr;
-  for(;;) {
+  Node* it = source;
+  Node** switcher = new Node* [2];
+  switcher[0] = nullptr;
+  switcher[1] = nullptr;
+  for(int i = 0; ; i++) {
+    int index =  i % 2;
     if(!it) return;
-    enqueue(dest1, it->val);
+    switcher[index] = enqueue(switcher[index], it->val);
     it = it->next;
-
-    if(!it) return;
-    enqueue(dest2, it->val);
-    it = it->next;
+    if(!dest1) dest1 = switcher[0];
+    if(!dest2) dest2 = switcher[1];
   }
+  delete [] switcher;
 }
 
 int main(int argc, char** argv) {
