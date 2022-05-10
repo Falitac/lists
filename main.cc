@@ -1,4 +1,6 @@
 #include <iostream>
+#include <vector>
+#include <algorithm>
 
 struct Node {
   Node(int val = 0)
@@ -17,6 +19,19 @@ void add(Node*& head, int val) {
 
 void addAfter(Node* node, int val) {
   node->next = new Node(val);
+}
+
+void enqueue(Node*& head, int val) {
+  if(!head) {
+    add(head, val);
+    return;
+  }
+
+  Node* it = head;
+  while(it->next) {
+    it = it->next;
+  }
+  addAfter(it, val);
 }
 
 void deleteElement(Node*& head, int val) {
@@ -245,21 +260,19 @@ void splitEachTwo(Node*& source, Node*& dest1, Node*& dest2) {
 int main(int argc, char** argv) {
   Node* head = nullptr;
 
-/*
-  add(head, 4);
-  add(head, 2);
-  add(head, 7);
-  copyN(head, 2);
-  print(head);
-  */
-
-  add(head, -3);
-  add(head, 5);
-  add(head, 6);
-  add(head, 1);
-  add(head, 8);
-  add(head, -2);
-  add(head, 4);
+  auto nums = std::vector<int>{
+    -3,
+    5,
+    6,
+    1,
+    8,
+    -2,
+    4,
+  };
+  std::reverse(nums.begin(), nums.end());
+  for(auto num : nums) {
+    enqueue(head, num);
+  }
   print(head);
 
   Node* h1 = nullptr;
