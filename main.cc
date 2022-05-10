@@ -250,6 +250,24 @@ void splitEachTwo(Node*& source, Node*& dest1, Node*& dest2) {
   delete [] switcher;
 }
 
+// it modifies original list!!!
+void splitInHalf(Node*& head, Node*& dest1, Node*& dest2) {
+  if(!head) {
+    return;
+  }
+
+  Node* slow = head;
+  Node* fast = head;
+  dest1 = head;
+  head = nullptr;
+  while(fast && fast->next) {
+    slow = slow->next;
+    fast = fast->next->next;
+  }
+  dest2 = slow->next;
+  slow->next = nullptr;
+}
+
 int main(int argc, char** argv) {
   Node* head = nullptr;
 
@@ -270,7 +288,7 @@ int main(int argc, char** argv) {
 
   Node* h1 = nullptr;
   Node* h2 = nullptr;
-  splitEachTwo(head, h1, h2);
+  splitInHalf(head, h1, h2);
   print(h1);
   print(h2);
 
