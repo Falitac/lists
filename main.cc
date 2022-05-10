@@ -1,6 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <random>
+
+thread_local auto mt = std::mt19937{std::random_device{}()};
 
 struct Node {
   Node(int val = 0)
@@ -291,17 +294,15 @@ void mergeHalf(Node*& source1, Node*& source2, Node*& dest) {
 int main(int argc, char** argv) {
   Node* head = nullptr;
 
-  auto nums = std::vector<int>{
-    -3,
-    5,
-    6,
-    1,
-    8,
-    -2,
-    4,
-  };
-  std::reverse(nums.begin(), nums.end());
-  for(auto num : nums) {
+  int n = 10;
+  if(argc >= 2) {
+    n = std::atoi(argv[1]);
+  }
+
+  auto randRange = std::uniform_int_distribution(-100, 100);
+
+  for(int i = 0; i < n; i++) {
+    auto num = randRange(mt);
     enqueue(head, num);
   }
   print(head);
@@ -317,6 +318,11 @@ int main(int argc, char** argv) {
   mergeHalf(h1, h2, head);
   print(h1);
   print(h2);
+  print(head);
+
+  while(head && head->next) {
+    sumConsecutiveN(head, 2);
+  }
   print(head);
 
   clear(head);
