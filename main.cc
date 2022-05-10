@@ -227,7 +227,7 @@ void reverse3(Node*& head) {
   head = prev;
 }
 
-//very dumb way, anti-DRY solution
+//better than previous, probably more DRY solution
 void splitEachTwo(Node*& source, Node*& dest1, Node*& dest2) {
   if(dest1)  return;
   if(dest2)  return;
@@ -236,23 +236,11 @@ void splitEachTwo(Node*& source, Node*& dest1, Node*& dest2) {
   Node* it = source, *it1 = nullptr, *it2 = nullptr;
   for(;;) {
     if(!it) return;
-    if(!dest1) {
-      add(dest1, it->val);
-      it1 = dest1;
-    } else {
-      addAfter(it1, it->val);
-      it1 = it1->next;
-    }
+    enqueue(dest1, it->val);
     it = it->next;
 
     if(!it) return;
-    if(!dest2) {
-      add(dest2, it->val);
-      it2 = dest2;
-    } else {
-      addAfter(it2, it->val);
-      it2 = it2->next;
-    }
+    enqueue(dest2, it->val);
     it = it->next;
   }
 }
