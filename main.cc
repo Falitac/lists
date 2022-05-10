@@ -212,6 +212,36 @@ void reverse3(Node*& head) {
   head = prev;
 }
 
+//very dumb way, anti-DRY solution
+void splitEachTwo(Node*& source, Node*& dest1, Node*& dest2) {
+  if(dest1)  return;
+  if(dest2)  return;
+  if(!source) return;
+
+  Node* it = source, *it1 = nullptr, *it2 = nullptr;
+  for(;;) {
+    if(!it) return;
+    if(!dest1) {
+      add(dest1, it->val);
+      it1 = dest1;
+    } else {
+      addAfter(it1, it->val);
+      it1 = it1->next;
+    }
+    it = it->next;
+
+    if(!it) return;
+    if(!dest2) {
+      add(dest2, it->val);
+      it2 = dest2;
+    } else {
+      addAfter(it2, it->val);
+      it2 = it2->next;
+    }
+    it = it->next;
+  }
+}
+
 int main(int argc, char** argv) {
   Node* head = nullptr;
 
@@ -232,8 +262,11 @@ int main(int argc, char** argv) {
   add(head, 4);
   print(head);
 
-  swapFirstTwo(head);
-  print(head);
+  Node* h1 = nullptr;
+  Node* h2 = nullptr;
+  splitEachTwo(head, h1, h2);
+  print(h1);
+  print(h2);
 
   clear(head);
 }
