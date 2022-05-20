@@ -421,7 +421,7 @@ public:
     while(pop());
   }
 
-  T top() {
+  T getTop() {
     if(!head) {
       throw std::runtime_error("No top value");
       return -1;
@@ -478,13 +478,6 @@ public:
     while(dequeue());
   }
 
-  T getBack() {
-    if(!back) {
-      throw std::runtime_error("No top value");
-    }
-    return back->val;
-  }
-
   T getFront() {
     if(!front) {
       throw std::runtime_error("No top value");
@@ -494,22 +487,29 @@ public:
 
   void enqueue(const T& value) {
     Node* newNode = new Node(value);
+    size++;
+
     if(!front) {
       back = front = newNode;
       return;
     }
 
-    front->next = newNode;
+    back->next = newNode;
+    back = newNode;
   }
 
   bool dequeue() {
     if(!front) {
       return false;
     }
+    std::cout << "Usuwam: " << front->val << "\n";
 
     Node* tmp = front->next;
-    delete head;
-    head = tmp;
+    delete front;
+    front = tmp;
+    if(front == nullptr) {
+      back = nullptr;
+    }
     size--;
     return true;
   }
@@ -525,18 +525,29 @@ public:
 
 };
 
-int main(int argc, char** argv) {
+int mainStack(int argc, char** argv) {
   Stack<int> stack;
   stack.push(3);
   stack.push(4);
   stack.push(8);
   stack.pop();
-  std::cout << "Stack top: " << stack.top() << std::endl;
+  std::cout << "Stack top: " << stack.getTop() << std::endl;
   std::cout << "Stack size: " << stack.getSize() << std::endl;
   return 0;
 }
 
-int mainQueue(int argc, char** argv) {
+int main(int argc, char** argv) {
+  Queue<int> queue;
+  for(int i = 1; i < 5; i++) {
+    queue.enqueue(i);
+  }
+
+  std::cout << "Queue front: " << queue.getFront() << std::endl;
+  std::cout << "Queue size: " << queue.getSize() << std::endl;
+  queue.dequeue();
+  std::cout << "Queue front: " << queue.getFront() << std::endl;
+  std::cout << "Queue size: " << queue.getSize() << std::endl;
+
   return 0;
 }
 
