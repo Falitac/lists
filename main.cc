@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <exception>
 #include <random>
 
 thread_local auto mt = std::mt19937{std::random_device{}()};
@@ -412,21 +413,17 @@ class Stack {
     { }
   };
   Node* head = nullptr;
+  unsigned size = 0;
 
 public:
-  int errors = 0;
 
   ~Stack() {
-    while(head) {
-      Node* tmp = head->next;
-      delete head;
-      head = tmp;
-    }
+    while(pop());
   }
 
   T top() {
     if(!head) {
-      errors = -1;
+      throw std::runtime_error("No top value");
       return -1;
     }
     return head->val;
@@ -436,13 +433,94 @@ public:
     Node* tmp = new Node(value);
     tmp->next = head;
     head = tmp;
+    size++;
   }
 
-  void pop() {
-    if(!head) return;
+  bool isEmpty() {
+    if(!head) return false;
+    return true;
+  }
+
+  unsigned getSize() {
+    return size;
+  }
+
+  bool pop() {
+    if(!head) return false;
+
+    std::cout << "Usuwam: " << head->val << "\n";
     Node* tmp = head->next;
     delete head;
     head = tmp;
+    size--;
+    return true;
+  }
+};
+
+// finnish him
+template<class T>
+class Queue {
+  struct Node {
+    T val;
+    Node* next;
+    Node(const T& value) 
+    : val(value)
+    , next(nullptr)
+    { }
+  };
+  Node* back = nullptr;
+  Node* front = nullptr;
+  unsigned size = 0;
+
+public:
+
+  ~Queue() {
+    while(dequeue());
+  }
+
+  T getBack() {
+    if(!back) {
+      throw std::runtime_error("No top value");
+    }
+    return back->val;
+  }
+
+  T getFront() {
+    if(!front) {
+      throw std::runtime_error("No top value");
+    }
+    return front->val;
+  }
+
+  void enqueue(const T& value) {
+    Node* newNode = new Node(value);
+    if(!front) {
+      back = front = newNode;
+      return;
+    }
+
+    front->next = newNode;
+  }
+
+  bool dequeue() {
+    if(!front) {
+      return false;
+    }
+
+    Node* tmp = front->next;
+    delete head;
+    head = tmp;
+    size--;
+    return true;
+  }
+
+  bool isEmpty() {
+    if(!front) return false;
+    return true;
+  }
+
+  unsigned getSize() {
+    return size;
   }
 
 };
@@ -454,6 +532,11 @@ int main(int argc, char** argv) {
   stack.push(8);
   stack.pop();
   std::cout << "Stack top: " << stack.top() << std::endl;
+  std::cout << "Stack size: " << stack.getSize() << std::endl;
+  return 0;
+}
+
+int mainQueue(int argc, char** argv) {
   return 0;
 }
 
