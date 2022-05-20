@@ -72,18 +72,17 @@ void print(Node* head) {
   std::printf("H");
   int i = 0;
   while(head) {
-    std::printf("-> %d ", head->val);
+    std::printf(" -> %d", head->val);
     head = head->next;
     i++;
     if(i > 100) break;
   }
-  std::printf("-> null\n");
+  std::printf(" -> null\n");
 }
 
 void clear(Node* head) {
   while(head) {
     Node* p = head->next; 
-    std::printf("Usuwam %d\n", head->val);
     delete head;
     head = p;
   }
@@ -259,13 +258,14 @@ void splitInHalf(Node*& head, Node*& dest1, Node*& dest2) {
   }
 
   Node* slow = head;
-  Node* fast = head;
+  Node* fast = head->next;
   dest1 = head;
   head = nullptr;
   while(fast && fast->next) {
     slow = slow->next;
     fast = fast->next->next;
   }
+  std::printf("I got on %d\n", slow->val);
   dest2 = slow->next;
   slow->next = nullptr;
 }
@@ -291,7 +291,173 @@ void mergeHalf(Node*& source1, Node*& source2, Node*& dest) {
   source1 = source2 = nullptr;
 }
 
+void mergeSorter(Node*& source1, Node*& source2, Node*& dest) {
+  if(!source1 && !source2) return;
+
+  add(dest, 0); // might be any value
+  Node* p = dest;
+  for(;;) {
+    if(!source1) {
+      p->next = source2;
+      source2 = nullptr;
+      break;
+    }
+    if(!source2) {
+      p->next = source1;
+      source1 = nullptr;
+      break;
+    }
+    
+    if(source1->val < source2->val) {
+      Node* tmp = source1->next;
+      source1->next = nullptr;
+      p->next = source1;
+      source1 = tmp;
+    } else {
+      Node* tmp = source2->next;
+      source2->next = nullptr;
+      p->next = source2;
+      source2 = tmp;
+    }
+    p = p->next;
+  }
+  Node* tmp = dest->next;
+  delete dest;
+  dest = tmp;
+}
+
+void sortHelper(Node* left, Node* right) {
+  if(!left->next) {
+    Node* h1{}, *h2{};
+    splitInHalf(left, h1, h2);
+    sortHelper(h1, h2);
+  }
+  Node *tmp = nullptr;
+  mergeSorter(left, right, tmp);
+  left = tmp;
+  if(!right->next) {
+    Node* h1{}, *h2{};
+    splitInHalf(right, h1, h2);
+    sortHelper(h1, h2);
+  }
+  tmp = nullptr;
+  mergeSorter(left, right, tmp);
+  left = tmp;
+}
+
+void sort(Node*& head) {
+  Node* left, *right;
+  left = right = nullptr;
+  sortHelper(head, right);
+}
+
+// rewrite this shiiii
+void merge2(Node*& H, Node*& H1, Node*& H2) {
+	if (H1 == NULL && H2 != NULL) {
+		H = H2;
+		H2 = NULL;
+	}
+	if (H1 != NULL && H2 == NULL) {
+		H = H1;
+		H1 = NULL;
+	}
+	if (H1 != NULL && H2 != NULL) {
+		Node* T = NULL;
+		Node* p = NULL;
+		while (H1 && H2) {
+			if (H1->val < H2->val) {
+				p = H1;
+				H1 = H1->next;
+				if (H == NULL) {
+					H = p;
+					T = p;
+				}
+				else {
+					T->next = p;
+					T = p;
+				}
+			}
+			else {
+				p = H2;
+				H2 = H2->next;
+				if (H == NULL) {
+					H = p;
+					T = p;
+				}
+				else {
+					T->next = p;
+					T = p;
+				}
+			}
+			}
+		if (H1 == NULL) {
+			T->next = H2;
+			H2 = NULL;
+    }
+		else {
+			T->next = H1;
+			H1 = NULL;
+		}
+	}
+}
+
+template<class T>
+class Stack {
+  struct Node {
+    T val;
+    Node* next;
+    Node(const T& value) 
+    : val(value)
+    , next(nullptr)
+    { }
+  };
+  Node* head = nullptr;
+
+public:
+  int errors = 0;
+
+  ~Stack() {
+    while(head) {
+      Node* tmp = head->next;
+      delete head;
+      head = tmp;
+    }
+  }
+
+  T top() {
+    if(!head) {
+      errors = -1;
+      return -1;
+    }
+    return head->val;
+  }
+
+  void push(const T& value) {
+    Node* tmp = new Node(value);
+    tmp->next = head;
+    head = tmp;
+  }
+
+  void pop() {
+    if(!head) return;
+    Node* tmp = head->next;
+    delete head;
+    head = tmp;
+  }
+
+};
+
 int main(int argc, char** argv) {
+  Stack<int> stack;
+  stack.push(3);
+  stack.push(4);
+  stack.push(8);
+  stack.pop();
+  std::cout << "Stack top: " << stack.top() << std::endl;
+  return 0;
+}
+
+int main1(int argc, char** argv) {
   Node* head = nullptr;
 
   int n = 10;
@@ -303,26 +469,15 @@ int main(int argc, char** argv) {
 
   for(int i = 0; i < n; i++) {
     auto num = randRange(mt);
-    enqueue(head, num);
+    enqueue(head, 10 - i);
   }
   print(head);
 
-  Node* h1 = nullptr;
-  Node* h2 = nullptr;
-
-  splitInHalf(head, h1, h2);
-  print(h1);
-  print(h2);
+  std::puts("Head:");
   print(head);
 
-  mergeHalf(h1, h2, head);
-  print(h1);
-  print(h2);
-  print(head);
-
-  while(head && head->next) {
-    sumConsecutiveN(head, 2);
-  }
+  sort(head);
+  std::puts("Head:");
   print(head);
 
   clear(head);
