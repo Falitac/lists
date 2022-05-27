@@ -27,6 +27,23 @@ void addAfter(Node* node, int val) {
 	node->next = new Node(val);
 }
 
+void remove(Node*& node) {
+	if(!node) return;
+	Node* tmp = node;
+	node = node->next;
+	delete tmp;
+}
+
+void insertSorted(Node*& head, int val) {
+	add(head, -1);
+	Node* it = head;
+	while(it->next && it->next->val < val) {
+		it = it->next;
+	}
+	add(it->next, val);
+	remove(head);
+}
+
 Node* enqueue(Node*& head, int val) {
 	if (!head) {
 		add(head, val);
@@ -62,12 +79,6 @@ void deleteElement(Node*& head, int val) {
 	it->next = nextNode;
 }
 
-void remove(Node*& node) {
-	if(!node) return;
-	Node* tmp = node;
-	node = node->next;
-	delete tmp;
-}
 
 void deleteAfter(Node* node) {
 	if (!node || !node->next) {
@@ -671,12 +682,13 @@ int main(int argc, char** argv) {
 
 	for (int i = 0; i < n; i++) {
 		auto num = randRange(mt);
-		add(head, i + 1);
+		//add(head, i + 1);
+		insertSorted(head, num);
 	}
 	print(head);
 
-	bubbleSort(head);
-	print(head);
+	//bubbleSort(head);
+	//print(head);
 
 	clear(head);
 	return 0;
