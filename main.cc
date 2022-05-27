@@ -4,6 +4,8 @@
 #include <exception>
 #include <random>
 
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
+
 thread_local auto mt = std::mt19937{ std::random_device{}() };
 
 struct Node {
@@ -573,7 +575,6 @@ void heapSort(int* arr, int size) {
 	}
 }
 
-#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
 int main(int argc, char** argv) {
 	auto randRange = std::uniform_int_distribution<int>(1, 100);
 
