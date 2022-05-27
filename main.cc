@@ -62,6 +62,13 @@ void deleteElement(Node*& head, int val) {
 	it->next = nextNode;
 }
 
+void remove(Node*& node) {
+	if(!node) return;
+	Node* tmp = node;
+	node = node->next;
+	delete tmp;
+}
+
 void deleteAfter(Node* node) {
 	if (!node || !node->next) {
 		return;
@@ -73,12 +80,9 @@ void deleteAfter(Node* node) {
 
 void print(Node* head) {
 	std::printf("H");
-	int i = 0;
 	while (head) {
 		std::printf(" -> %d", head->val);
 		head = head->next;
-		i++;
-		if (i > 100) break;
 	}
 	std::printf(" -> null\n");
 }
@@ -175,6 +179,41 @@ void swapFirstTwo(Node*& head) {
 	head->next = tmp->next;
 	tmp->next = head;
 	head = tmp;
+}
+
+void swap(Node*& head) {
+	if(!head && !head->next) return;
+	Node* tmp = head->next;
+	head->next = tmp->next;
+	tmp->next = head;
+	head = tmp;
+}
+
+void bubbleSort(Node*& head) {
+	if(!head) return;
+
+	add(head, -1);
+	Node* it = head;
+	Node* currentSorted = nullptr;
+	for(;;) {
+		Node* sortedPoint = nullptr;
+		while(it->next->next) {
+			if(it->next->next->val < it->next->val) {
+				swap(it->next);
+				sortedPoint = it->next;
+			}
+			if(currentSorted == it->next->next) break;
+			it = it->next;
+		}
+		if(!sortedPoint) {
+			break;
+		}
+		if(!it->next->next) {
+			it = head;
+			currentSorted = sortedPoint;
+		}
+	}
+	remove(head);
 }
 
 void removeBefore(Node*& head, int val) {
@@ -341,7 +380,6 @@ void mergeSort(Node*& head) {
 		mergeSorter(head1, head2, head);
 	}
 }
-
 
 // rewrite this shiiii
 void merge2(Node*& H, Node*& H1, Node*& H2) {
@@ -575,7 +613,8 @@ void heapSort(int* arr, int size) {
 	}
 }
 
-int main(int argc, char** argv) {
+// heapsort
+int mainHeapSort(int argc, char** argv) {
 	auto randRange = std::uniform_int_distribution<int>(1, 100);
 
 	int arr[10];
@@ -589,8 +628,10 @@ int main(int argc, char** argv) {
 		std::printf("%d ", arr[i]);
 	}
 	std::cin.get();
+	return 0;
 }
 
+// Enqaueue + sort
 int main1(int argc, char** argv) {
 	Node* head = nullptr;
 
@@ -612,6 +653,29 @@ int main1(int argc, char** argv) {
 
 	mergeSort(head);
 	std::puts("Head:");
+	print(head);
+
+	clear(head);
+	return 0;
+}
+
+int main(int argc, char** argv) {
+	Node* head = nullptr;
+
+	int n = 10;
+	if (argc >= 2) {
+		n = std::atoi(argv[1]);
+	}
+
+	auto randRange = std::uniform_int_distribution<int>(-100, 100);
+
+	for (int i = 0; i < n; i++) {
+		auto num = randRange(mt);
+		add(head, i + 1);
+	}
+	print(head);
+
+	bubbleSort(head);
 	print(head);
 
 	clear(head);
